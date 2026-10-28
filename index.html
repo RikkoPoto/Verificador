@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Verificador Ley 21.719</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Schibsted+Grotesk:wght@600;700&display=swap">
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="js/tailwind.config.js"></script>
+    <link rel="stylesheet" href="css/tokens.css">
+    <style type="text/tailwindcss">
+@layer components {
+  .navlink {@apply whitespace-nowrap border-b-2 border-transparent px-3 py-2.5 text-sm font-medium text-mute hover:text-ink aria-[current=page]:border-accent aria-[current=page]:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:opacity-50; }
+  .btn-primary { @apply bg-accent text-accent-ink hover:opacity-90; }
+  .btn-ghost { @apply border border-line bg-surface text-ink hover:bg-neutral; }
+  .btn-sm { @apply px-3 py-1.5 text-xs; }
+  .chip { @apply inline-flex shrink-0 items-center whitespace-nowrap rounded px-2 py-0.5 text-xs font-semibold; }
+  .chip-C { @apply bg-ok-soft text-ok; }
+  .chip-P { @apply bg-warn-soft text-warn; }
+  .chip-N { @apply bg-bad-soft text-bad; }
+  .chip-E { @apply bg-neutral text-mute; }
+  .chip-A { @apply bg-accent-soft text-accent; }
+  .panel { @apply rounded-md border border-line bg-surface; }
+  .eyebrow { @apply font-mono text-xs uppercase tracking-wider text-mute; }
+  .field { @apply rounded-md border border-line bg-bg px-3 py-2.5 text-sm text-ink placeholder:text-mute focus:outline-none focus-visible:ring-2 focus-visible:ring-accent; }
+} 
+</style>
+</head>
+<body>
+<div id="app" class="font-sans text-[15px] leading-relaxed text-ink">
+
+  <header class="border-b border-line">
+    <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-1 pt-4">
+      <a href="#inicio" class="flex items-center gap-2.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+        <svg viewBox="0 0 24 24" class="h-6 w-6 text-accent" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.5 3.1 8.2 7.5 9.5 4.4-1.3 7.5-5 7.5-9.5V6L12 3Z"/><path d="m8.8 12 2.4 2.4 4.2-4.6"/></svg>
+        <span class="font-display text-lg font-bold tracking-tight">Verificador 21.719</span>
+      </a>
+      <span class="font-mono text-xs text-mute">Mockup · datos de ejemplo</span>
+    </div>
+    <nav aria-label="Principal" class="mx-auto mt-3 flex max-w-6xl gap-1 overflow-x-auto">
+      <a href="#inicio" data-nav="inicio" class="navlink">Inicio</a>
+      <a href="#escaneo" data-nav="escaneo" class="navlink">Escaneo en vivo</a>
+      <a href="#informe" data-nav="informe" class="navlink">Informe</a>
+      <a href="#historial" data-nav="historial" class="navlink">Historial</a>
+      <a href="#integracion" data-nav="integracion" class="navlink">Integración</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- INICIO -->
+    <section data-view="inicio" class="py-8 sm:py-12">
+      <div class="mx-auto max-w-6xl">
+        <div class="max-w-2xl">
+          <p class="eyebrow">Ley N.º 21.719 · Protección de datos personales</p>
+          <h1 class="mt-3 font-display text-3xl font-bold leading-tight tracking-tight sm:text-4xl" style="text-wrap:balance">Revisa si un sitio web cumple la Ley 21.719</h1>
+          <p class="mt-3 text-mute">Ingresa la dirección de un sitio. El sistema revisa su política de privacidad, el consentimiento y los canales para ejercer derechos, y entrega un informe que puedes exportar.</p>
+        </div>
+
+        <form id="scan-form" novalidate class="panel mt-8 p-4 sm:p-6">
+          <label for="url" class="block text-sm font-semibold">Dirección del sitio</label>
+          <div class="mt-2 flex flex-col gap-3 sm:flex-row">
+            <input id="url" name="url" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://www.ejemplo.cl" aria-describedby="url-help url-error" class="field min-w-0 flex-1 font-mono">
+            <button type="submit" class="btn btn-primary">Iniciar verificación</button>
+          </div>
+          <p id="url-error" role="alert" class="mt-2 text-sm font-medium text-bad" hidden></p>
+          <p id="url-help" class="mt-2 text-sm text-mute">Puedes pegar la dirección con o sin https://.</p>
+          <div class="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-line pt-4">
+            <div class="flex items-center gap-2">
+              <label for="scope" class="text-sm text-mute">Alcance</label>
+              <select id="scope" class="field py-1.5">
+                <option value="1">Solo la página indicada</option>
+                <option value="10" selected>Hasta 10 páginas del sitio</option>
+                <option value="50">Hasta 50 páginas del sitio</option>
+              </select>
+            </div>
+            <p class="text-sm text-mute">Probar con:
+              <button type="button" data-action="example" data-url="https://www.tiendaejemplo.cl" class="font-mono text-accent hover:underline">tiendaejemplo.cl</button>,
+              <button type="button" data-action="example" data-url="https://www.municipio-ejemplo.cl" class="font-mono text-accent hover:underline">municipio-ejemplo.cl</button>
+            </p>
+          </div>
+        </form>
+
+        <div class="mt-12">
+          <h2 class="font-display text-xl font-bold tracking-tight">Qué se revisa</h2>
+          <p class="mt-1 text-sm text-mute">Cada regla viene de un criterio de la Ley 21.719 y su reglamento.</p>
+          <div id="home-cats" class="mt-5 grid gap-8 md:grid-cols-3"></div>
+        </div>
+
+        <div class="mt-12 grid gap-6 md:grid-cols-2">
+          <div class="panel min-w-0 p-5">
+            <p class="eyebrow">Compromisos de diseño · a confirmar con el equipo</p>
+            <h2 class="mt-2 font-display text-lg font-bold tracking-tight">Privacidad desde el diseño</h2>
+            <ul class="mt-3 space-y-2 text-sm">
+              <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"></span>Solo se guarda la dirección, la fecha y hora, y los resultados de cada verificación.</li>
+              <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"></span>No se pide cuenta ni datos personales para ejecutar un escaneo.</li>
+              <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"></span>El análisis lee solo contenido público: no envía formularios ni inicia sesión.</li>
+              <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"></span>No existen reglas sin referencia a la norma.</li>
+            </ul>
+          </div>
+          <div class="panel min-w-0 p-5">
+            <div class="flex items-center justify-between gap-3">
+              <h2 class="font-display text-lg font-bold tracking-tight">Últimas verificaciones</h2>
+              <a href="#historial" class="text-sm font-medium text-accent hover:underline">Ver historial</a>
+            </div>
+            <ul id="home-recent" class="mt-3 divide-y divide-line"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ESCANEO EN VIVO -->
+    <section data-view="escaneo" class="py-8 sm:py-10" hidden>
+      <div class="mx-auto max-w-6xl">
+        <div id="scan-empty" class="panel mx-auto max-w-xl p-8 text-center" hidden>
+          <h1 class="font-display text-xl font-bold tracking-tight">No hay una verificación en curso</h1>
+          <p class="mt-2 text-sm text-mute">Ingresa una dirección en Inicio para empezar. El avance y los errores aparecen aquí a medida que se revisa el sitio.</p>
+          <a href="#inicio" class="btn btn-primary mt-5">Ir a Inicio</a>
+        </div>
+
+        <div id="scan-live" hidden>
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="min-w-0">
+              <p class="eyebrow">Verificación <span id="scan-id"></span></p>
+              <h1 id="scan-url" class="mt-1 break-all font-mono text-xl font-medium sm:text-2xl"></h1>
+              <p id="scan-meta" class="mt-1 text-sm text-mute"></p>
+            </div>
+            <span id="scan-status" class="chip"></span>
+          </div>
+
+          <div class="panel mt-6 p-4 sm:p-6">
+            <div class="flex items-baseline justify-between gap-4">
+              <p class="text-sm font-semibold">Avance</p>
+              <p id="scan-pct" class="font-display text-3xl font-bold tabular-nums">0%</p>
+            </div>
+            <div id="scan-bar" role="progressbar" aria-label="Avance del escaneo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="mt-3 h-2.5 overflow-hidden rounded-full bg-neutral">
+              <div id="scan-fill" class="h-full rounded-full bg-accent transition-[width] duration-500 motion-reduce:transition-none" style="width:0%"></div>
+            </div>
+            <p id="scan-step" class="mt-3 text-sm text-mute"></p>
+            <div id="scan-error" role="alert" class="mt-4 rounded-md border border-bad bg-bad-soft p-3 text-sm font-medium text-bad" hidden></div>
+            <div class="mt-4 flex flex-wrap gap-3">
+              <button id="btn-cancel" type="button" data-action="cancel" class="btn btn-ghost">Cancelar escaneo</button>
+              <button id="btn-retry" type="button" data-action="retry" class="btn btn-primary" hidden>Reintentar escaneo</button>
+              <a id="btn-report" href="#informe" class="btn btn-primary" hidden>Ver informe</a>
+              <a id="btn-new" href="#inicio" class="btn btn-ghost" hidden>Nueva verificación</a>
+            </div>
+          </div>
+
+          <div class="mt-6 grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)]">
+            <div class="panel p-4">
+              <h2 class="text-sm font-semibold">Etapas</h2>
+              <ol id="scan-stages" class="mt-3 space-y-3"></ol>
+            </div>
+            <div class="panel min-w-0">
+              <div class="border-b border-line px-4 py-3"><h2 class="text-sm font-semibold">Registro en vivo</h2></div>
+              <ol id="scan-log" role="log" aria-live="polite" aria-label="Registro del escaneo" class="max-h-72 space-y-1 overflow-y-auto p-4 font-mono text-xs leading-5"></ol>
+            </div>
+          </div>
+
+          <div class="panel mt-6">
+            <div class="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
+              <h2 class="text-sm font-semibold">Incumplimientos detectados</h2>
+              <span id="scan-count" class="chip chip-E">0</span>
+            </div>
+            <p id="scan-findings-empty" class="px-4 py-5 text-sm text-mute">Todavía no se detecta ningún incumplimiento.</p>
+            <ul id="scan-findings" class="divide-y divide-line"></ul>
+          </div>
+
+          <div class="mt-6 border border-dashed border-line p-4 text-sm">
+            <p class="eyebrow">Controles de demostración</p>
+            <label class="mt-2 flex items-center gap-2">
+              <input id="sim-error" type="checkbox" class="h-4 w-4" style="accent-color:var(--accent)">
+              Simular un error de conexión a mitad del escaneo
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INFORME -->
+    <section data-view="informe" class="py-8 sm:py-10" hidden>
+      <div id="report" class="mx-auto max-w-6xl"></div>
+    </section>
+
+    <!-- HISTORIAL -->
+    <section data-view="historial" class="py-8 sm:py-10" hidden>
+      <div class="mx-auto max-w-6xl">
+        <h1 class="font-display text-2xl font-bold tracking-tight sm:text-3xl">Historial de verificaciones</h1>
+        <p class="mt-1 text-sm text-mute">Cada verificación guarda la fecha y hora de ejecución, el sitio y el resultado.</p>
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+          <div class="flex-1">
+            <label for="hist-q" class="sr-only">Buscar por sitio</label>
+            <input id="hist-q" type="search" placeholder="Buscar por sitio" autocomplete="off" class="field w-full font-mono">
+          </div>
+          <div>
+            <label for="hist-status" class="sr-only">Filtrar por estado</label>
+            <select id="hist-status" class="field w-full sm:w-auto">
+              <option value="">Todos los estados</option>
+              <option>Completado</option>
+              <option>Error</option>
+              <option>Interrumpido</option>
+            </select>
+          </div>
+        </div>
+        <div class="panel mt-4 overflow-x-auto">
+          <table class="w-full min-w-[46rem] text-left text-sm">
+            <thead>
+              <tr class="text-xs uppercase tracking-wider text-mute">
+                <th scope="col" class="px-4 py-3 font-medium">Fecha y hora</th>
+                <th scope="col" class="px-4 py-3 font-medium">Sitio</th>
+                <th scope="col" class="px-4 py-3 font-medium">Resultado</th>
+                <th scope="col" class="px-4 py-3 font-medium">Estado</th>
+                <th scope="col" class="px-4 py-3 text-right font-medium"><span class="sr-only">Acciones</span></th>
+              </tr>
+            </thead>
+            <tbody id="hist-body"></tbody>
+          </table>
+          <p id="hist-empty" class="px-4 py-8 text-center text-sm text-mute" hidden>Ninguna verificación coincide con el filtro.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTEGRACIÓN -->
+    <section data-view="integracion" class="py-8 sm:py-10" hidden>
+      <div class="mx-auto max-w-6xl">
+        <p class="eyebrow">Para el equipo de backend · propuesta a acordar</p>
+        <h1 class="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">Qué espera el front end</h1>
+        <p class="mt-2 max-w-2xl text-sm text-mute">Este mockup simula todo en el navegador. Estas son las rutas y los datos que reemplazarían la simulación. Los nombres se pueden cambiar.</p>
+
+        <div class="panel mt-6 overflow-x-auto">
+          <table class="w-full min-w-[40rem] text-left text-sm">
+            <thead>
+              <tr class="text-xs uppercase tracking-wider text-mute">
+                <th scope="col" class="px-4 py-3 font-medium">Método</th>
+                <th scope="col" class="px-4 py-3 font-medium">Ruta</th>
+                <th scope="col" class="px-4 py-3 font-medium">Pantalla que la usa</th>
+              </tr>
+            </thead>
+            <tbody class="font-mono text-xs">
+              <tr class="border-t border-line"><td class="px-4 py-3">POST</td><td class="px-4 py-3">/api/scans</td><td class="px-4 py-3 font-sans text-sm">Inicio. Recibe url y alcance, devuelve id.</td></tr>
+              <tr class="border-t border-line"><td class="px-4 py-3">GET</td><td class="px-4 py-3">/api/scans/{id}/events</td><td class="px-4 py-3 font-sans text-sm">Escaneo en vivo. Flujo SSE con avance, reglas y errores.</td></tr>
+              <tr class="border-t border-line"><td class="px-4 py-3">POST</td><td class="px-4 py-3">/api/scans/{id}/cancel</td><td class="px-4 py-3 font-sans text-sm">Escaneo en vivo. Botón Cancelar.</td></tr>
+              <tr class="border-t border-line"><td class="px-4 py-3">POST</td><td class="px-4 py-3">/api/scans/{id}/retry</td><td class="px-4 py-3 font-sans text-sm">Escaneo en vivo e Historial. Reanuda desde el último paso.</td></tr>
+              <tr class="border-t border-line"><td class="px-4 py-3">GET</td><td class="px-4 py-3">/api/scans/{id}</td><td class="px-4 py-3 font-sans text-sm">Informe. Reglas evaluadas, puntaje y clasificación.</td></tr>
+              <tr class="border-t border-line"><td class="px-4 py-3">GET</td><td class="px-4 py-3">/api/scans?status=&amp;q=&amp;page=</td><td class="px-4 py-3 font-sans text-sm">Historial.</td></tr>
+              <tr class="border-t border-line"><td class="px-4 py-3">GET</td><td class="px-4 py-3">/api/scans/{id}/report?format=pdf|json|csv</td><td class="px-4 py-3 font-sans text-sm">Informe. Botones de exportación.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-6 grid gap-6 lg:grid-cols-2">
+          <div class="min-w-0">
+            <h2 class="text-sm font-semibold">Evento de regla evaluada (SSE)</h2>
+            <pre class="panel mt-2 overflow-x-auto p-4 font-mono text-xs leading-5">{
+  "event": "rule",
+  "scanId": "VER-20261028-0143",
+  "step": 7,
+  "total": 17,
+  "rule": {
+    "id": "CON-01",
+    "status": "N",
+    "evidence": "Se cargaron 3 cookies de analítica antes del banner."
+  }
+}</pre>
+          </div>
+          <div class="min-w-0">
+            <h2 class="text-sm font-semibold">Resultado final</h2>
+            <pre class="panel mt-2 overflow-x-auto p-4 font-mono text-xs leading-5">{
+  "id": "VER-20261028-0143",
+  "url": "https://www.tiendaejemplo.cl",
+  "startedAt": "2026-10-28T14:05:12-03:00",
+  "status": "done",
+  "score": 54,
+  "classification": "parcial",
+  "rules": [
+    { "id": "PRI-01", "status": "C", "evidence": "..." }
+  ]
+}</pre>
+          </div>
+        </div>
+
+        <div class="mt-6 grid gap-6 md:grid-cols-2">
+          <div class="panel p-5">
+            <h2 class="text-sm font-semibold">Estados de una regla</h2>
+            <ul class="mt-3 space-y-2 text-sm">
+              <li class="flex items-center gap-3"><span class="chip chip-C w-24 justify-center">C</span>Cumple. Suma 1 punto.</li>
+              <li class="flex items-center gap-3"><span class="chip chip-P w-24 justify-center">P</span>Parcial. Suma 0,5 puntos.</li>
+              <li class="flex items-center gap-3"><span class="chip chip-N w-24 justify-center">N</span>No cumple. Suma 0 puntos.</li>
+              <li class="flex items-center gap-3"><span class="chip chip-E w-24 justify-center">E</span>No evaluable. No entra en el puntaje.</li>
+            </ul>
+          </div>
+          <div class="panel p-5">
+            <h2 class="text-sm font-semibold">Estados de un escaneo</h2>
+            <p class="mt-3 text-sm text-mute"><span class="font-mono text-ink">running</span>, <span class="font-mono text-ink">done</span>, <span class="font-mono text-ink">error</span> y <span class="font-mono text-ink">cancelled</span>. En este mockup el puntaje se calcula en el navegador. En producción debe venir del backend, junto con los umbrales de clasificación: Bajo menos de 50, Parcial de 50 a 84, Alto desde 85.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="toast" role="status" class="pointer-events-none fixed inset-x-0 bottom-0 flex justify-center px-4 pb-[max(1rem,env(safe-area-inset-bottom,0px))]" hidden>
+    <p id="toast-text" class="max-w-md rounded-md bg-ink px-4 py-3 text-sm font-medium text-bg"></p>
+  </div>
+  <div class="h-10"></div>
+</div>
+
+
+<script src="js/app.js"></script>
+</body>
+</html>
